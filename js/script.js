@@ -1,3 +1,5 @@
+import { loadData } from './modules/init.js';
+
 // CREATE AN ARRAY OF EMPLOYEES
 let arrEmployees = [
     [34123413, "Zak Ruvalcaba", 3424, "zak@vectacorp.com", "Executive"],
@@ -8,12 +10,21 @@ let arrEmployees = [
 ]
 
 // GET DOM ELEMENTS
-let empTable    = document.querySelector('#employees')
-let empCount    = document.querySelector('#empCount')
-
+let empTable = document.querySelector('#employees');
+let empCount = document.querySelector('#empCount');
 // BUILD THE EMPLOYEES TABLE WHEN THE PAGE LOADS
-buildGrid(arrEmployees)
-
+async function init() {
+    try {
+      const data = await loadData();
+      buildGrid(data);
+    } catch (error) {
+      // Handle error, you might want to display an error message to the user
+      console.error('Initialization error:', error);
+    }
+  }
+  
+  // Call the init function to start the initialization process
+  init();
 // DELETE EMPLOYEE
 empTable.addEventListener('click', (e) => {
     if (e.target.classList.contains('delete')) {
@@ -28,28 +39,28 @@ empTable.addEventListener('click', (e) => {
 })
 
 // BUILD THE EMPLOYEES GRID
-function buildGrid(arrEmployees) {
+function buildGrid(employees) {
     // REMOVE THE EXISTING SET OF ROWS BY REMOVING THE ENTIRE TBODY SECTION
-    empTable.lastElementChild.remove()
+    empTable.lastElementChild.remove();
     // REBUILD THE TBODY FROM SCRATCH
-    let tbody = document.createElement('tbody')
+    let tbody = document.createElement('tbody');
     // LOOP THROUGH THE ARRAY OF EMPLOYEES
     // REBUILDING THE ROW STRUCTURE
-    for (let employee of arrEmployees) {
-        tbody.innerHTML += 
-        `
-        <tr>
-            <td>${employee[0]}</td>
-            <td>${employee[1]}</td>
-            <td>${employee[2]}</td>
-            <td><a href="mailto:${employee[3]}">${employee[3]}</a></td>
-            <td>${employee[4]}</td>
-            <td><button class="btn btn-sm btn-danger delete">X</button></td>
-        </tr>
-        `
+    for (let employee of employees) {
+      tbody.innerHTML +=
+      `
+      <tr>
+          <td>${employee.id}</td>
+          <td>${employee.name}</td>
+          <td>${employee.extension}</td>
+          <td><a href="mailto:${employee.email}">${employee.email}</a></td>
+          <td>${employee.department}</td>
+          <td><button class="btn btn-sm btn-danger delete">X</button></td>
+      </tr>
+      `;
     }
     // BIND THE TBODY TO THE EMPLOYEE TABLE
-    empTable.appendChild(tbody)
+    empTable.appendChild(tbody);
     // UPDATE EMPLOYEE COUNT
-    empCount.value = `(${arrEmployees.length})`
-}
+    empCount.value = `(${employees.length})`;
+  }
