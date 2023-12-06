@@ -5,7 +5,7 @@ async function loadData() {
       return data;
     } catch (error) {
       console.error('Error loading data:', error);
-      throw error; // Re-throw the error to indicate that data loading failed
+      throw error;
     }
   }
   
